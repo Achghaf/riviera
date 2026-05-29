@@ -16,14 +16,24 @@ const SORT_OPTIONS = [
 ];
 
 export default function AdminPage() {
-  const isAdmin = useAuthStore((s) => s.isAdmin)();
+  const email = useAuthStore((s) => s.email);
+  const isAdmin = !!email && ['bnsachraf1@gmail.com'].includes(email.toLowerCase());
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'Tous'>('Tous');
   const [sortOption, setSortOption] = useState('recent');
 
   useEffect(() => {
-    setProducts(INIT_PRODUCTS.map((p) => ({ ...p })));
+    try {
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('summer_store_products') : null;
+      if (saved) {
+        setProducts(JSON.parse(saved));
+      } else {
+        setProducts(INIT_PRODUCTS.map((p) => ({ ...p })));
+      }
+    } catch (e) {
+      setProducts(INIT_PRODUCTS.map((p) => ({ ...p })));
+    }
   }, []);
 
   const resetProducts = () => setProducts(INIT_PRODUCTS.map((p) => ({ ...p })));
@@ -47,8 +57,14 @@ export default function AdminPage() {
   };
 
   const handleSave = () => {
-    console.log('Admin saved products:', products);
-    alert('Modifications sauvegardées localement (console pour détails).');
+    try {
+      localStorage.setItem('summer_store_products', JSON.stringify(products));
+      console.log('Admin saved products:', products);
+      alert('Modifications sauvegardées dans le navigateur.');
+    } catch (e) {
+      console.error('Failed to save products', e);
+      alert('Échec de la sauvegarde. Ouvrez la console pour plus de détails.');
+    }
   };
 
   const handleExport = async () => {

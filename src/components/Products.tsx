@@ -14,6 +14,7 @@ interface ProductsProps {
 
 export default function Products({ activeFilter, onToast, onFilterChange }: ProductsProps) {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [allProducts, setAllProducts] = useState(PRODUCTS);
 
   useEffect(() => {
     const el = gridRef.current;
@@ -28,13 +29,33 @@ export default function Products({ activeFilter, onToast, onFilterChange }: Prod
       },
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
-    el.querySelectorAll('[class*="card"]').forEach((child) => observer.observe(child));
+    el.querySelectorAll('[class*="card"]').forEach((child) => {
+      observer.observe(child);
+      try {
+        const rect = child.getBoundingClientRect();
+        const vh = (window.innerHeight || document.documentElement.clientHeight);
+        // If the card is already within the viewport, reveal it immediately
+        if (rect.top < vh) child.classList.add('visible');
+      } catch (e) {
+        // ignore if running in an unexpected environment
+      }
+    });
     return () => observer.disconnect();
   }, [activeFilter]);
 
+  useEffect(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('summer_store_products') : null;
+      if (saved) setAllProducts(JSON.parse(saved));
+      else setAllProducts(PRODUCTS);
+    } catch (e) {
+      setAllProducts(PRODUCTS);
+    }
+  }, []);
+
   const filtered = activeFilter === 'Tous'
-    ? PRODUCTS
-    : PRODUCTS.filter((p) => p.cat === activeFilter);
+    ? allProducts
+    : allProducts.filter((p) => p.cat === activeFilter);
 
   return (
     <section className={styles.section} id="products">

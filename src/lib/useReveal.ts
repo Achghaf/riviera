@@ -25,8 +25,21 @@ export function useReveal<T extends HTMLElement>() {
 
     // Observe the container and all child reveal elements
     observer.observe(el);
-    el.querySelectorAll('[class*="card"], [class*="reveal"]').forEach((child) => {
+    const children = Array.from(el.querySelectorAll('[class*="card"], [class*="reveal"]'));
+    children.forEach((child, idx) => {
       observer.observe(child);
+      try {
+        const rect = child.getBoundingClientRect();
+        const vh = (window.innerHeight || document.documentElement.clientHeight);
+        // Reveal if already within viewport or among the first few items
+        if (rect.top < vh + 40 || idx < 6) {
+          child.classList.add('visible');
+          // reveal nested delay classes as well
+          child.querySelectorAll('[class*="d1"], [class*="d2"], [class*="d3"], [class*="d4"], [class*="d5"], [class*="d6"]').forEach((c) => c.classList.add('visible'));
+        }
+      } catch (e) {
+        // ignore in non-browser environments
+      }
     });
 
     return () => observer.disconnect();

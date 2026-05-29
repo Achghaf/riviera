@@ -103,6 +103,7 @@
 .profileBtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 0 14px;
   min-height: 40px;
@@ -110,8 +111,18 @@
   background: rgba(255,255,255,0.92);
   color: var(--mid);
   transition: all 180ms;
+  position: relative;
 }
 .profileBtn:hover { background: var(--cream-dk); color: var(--teal); box-shadow: var(--shadow-sm); }
+.profileBtn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .profileLabel {
   display: none;
   font-size: 0.82rem;
