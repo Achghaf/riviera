@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const packageJson = require('./package.json');
+const appVersion = packageJson.version || '0.1.0';
 
 const publicDir = path.join(__dirname, 'public');
 if (!fs.existsSync(publicDir)) {
@@ -10,6 +12,8 @@ if (!fs.existsSync(publicDir)) {
 fs.writeFileSync(path.join(publicDir, 'manifest.json'), JSON.stringify({
   "name": "Summer Store — Boutique Estivale",
   "short_name": "Summer Store",
+  "version": appVersion,
+  "version_name": appVersion,
   "description": "Votre destination pour tous vos besoins estivaux. Collection exclusive de produits premium pour un été inoubliable.",
   "start_url": "/",
   "scope": "/",
