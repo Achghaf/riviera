@@ -69,12 +69,13 @@ export default function Navbar({ onCartOpen }: NavbarProps) {
             </button>
 
             {/* Login / User */}
-            <button className={styles.iconBtn} onClick={handleAuth} aria-label="Compte">
+            <button className={styles.profileBtn} onClick={handleAuth} aria-label={email ? 'Mon compte' : 'Connexion'}>
               {email ? (
                 <span className={styles.userAvatar}>{initials}</span>
               ) : (
                 <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M2 22a10 10 0 0120 0"/></svg>
               )}
+              <span className={styles.profileLabel}>{email ? 'Mon compte' : 'Se connecter'}</span>
             </button>
 
             {/* Admin dashboard link */}

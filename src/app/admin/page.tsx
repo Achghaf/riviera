@@ -18,8 +18,8 @@ export default function AdminPage() {
     return (
       <main style={{ padding: 40 }}>
         <h2>Accès refusé</h2>
-        <p>Vous n'êtes pas administrateur. Connectez-vous avec un compte administrateur pour accéder au tableau de bord.</p>
-        <p><Link href="/">Retour à l'accueil</Link></p>
+        <p>Vous n&apos;êtes pas administrateur. Connectez-vous avec un compte administrateur pour accéder au tableau de bord.</p>
+        <p><Link href="/">Retour à l&apos;accueil</Link></p>
       </main>
     );
   }
@@ -44,7 +44,7 @@ export default function AdminPage() {
   return (
     <main style={{ padding: 28 }}>
       <h1>Tableau de bord Admin</h1>
-      <p>Modifier les produits — les changements sont stockés localement pour l'instant.</p>
+      <p>Modifier les produits — les changements sont stockés localement pour l&apos;instant.</p>
       <div style={{ margin: '18px 0' }}>
         <button onClick={handleAdd} style={{ marginRight: 8 }}>Ajouter un produit</button>
         <button onClick={handleSave}>Enregistrer les modifications</button>

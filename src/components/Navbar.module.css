@@ -14,13 +14,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
-  max-width: 1280px;
+  height: 80px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
 }
 @media (min-width: 768px) { .inner { padding: 0 40px; } }
 @media (min-width: 1024px) { .inner { padding: 0 60px; } }
+@media (min-width: 1280px) { .inner { padding: 0 80px; } }
 
 .logo {
   display: flex;
@@ -98,6 +99,27 @@
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+.profileBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  min-height: 40px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  color: var(--mid);
+  transition: all 180ms;
+}
+.profileBtn:hover { background: var(--cream-dk); color: var(--teal); box-shadow: var(--shadow-sm); }
+.profileLabel {
+  display: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .profileLabel { display: inline-flex; }
 }
 
 .userAvatar {

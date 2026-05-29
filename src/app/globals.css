@@ -35,10 +35,21 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--cream);
+  background: radial-gradient(circle at top left, rgba(217,95,59,.12), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(26,107,138,.08), transparent 30%),
+              var(--cream);
   color: var(--dark);
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+main {
+  padding: 32px 0 80px;
+}
+@media (min-width: 900px) {
+  main {
+    padding: 44px 0 100px;
+  }
 }
 
 img { display: block; max-width: 100%; }
