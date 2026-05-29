@@ -8,12 +8,9 @@
   </defs>
   <rect width="100%" height="100%" rx="28" fill="#FDFAF4"/>
   <g transform="translate(96,96)">
-    <!-- Sun core -->
     <circle cx="0" cy="0" r="40" fill="url(#sunGrad)" />
-    <!-- Soft glow -->
     <circle cx="0" cy="0" r="56" fill="none" stroke="rgba(255,138,0,0.12)" stroke-width="20" />
 
-    <!-- Rays -->
     <g stroke="#FFB74D" stroke-width="6" stroke-linecap="round">
       <line x1="0" y1="-74" x2="0" y2="-56" />
       <line x1="0" y1="74" x2="0" y2="56" />
@@ -25,7 +22,6 @@
       <line x1="-52" y1="52" x2="-40" y2="40" />
     </g>
 
-    <!-- Center highlight -->
     <circle cx="-10" cy="-10" r="10" fill="rgba(255,255,255,0.35)" />
   </g>
 </svg>

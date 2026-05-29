@@ -6,8 +6,8 @@ const path = require('path');
 const sharp = require('sharp');
 
 const icons = [
-  { src: 'public/icon-512.svg', out: 'public/icon-512.png', size: 512 },
-  { src: 'public/icon-192.svg', out: 'public/icon-192.png', size: 192 },
+  { src: 'public/icon-512.svg', out: 'public/icon-512x512.png', size: 512 },
+  { src: 'public/icon-192.svg', out: 'public/icon-192x192.png', size: 192 },
 ];
 
 async function convert() {
