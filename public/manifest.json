@@ -1,0 +1,16 @@
+{
+  "name": "Summer Store — Boutique Estivale",
+  "short_name": "SummerStore",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFAF4",
+  "theme_color": "#0E4C6A",
+  "description": "Collection exclusive de produits premium pour un été inoubliable.",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

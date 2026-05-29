@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import PWAInstaller from '@/components/PWAInstaller';
+import PWAInstallButton from '@/components/PWAInstallButton';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="app-root">
         <PWAInstaller />
         <div className="page">{children}</div>
+        <PWAInstallButton />
       </body>
     </html>
   );
