@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
+import { useAuthStore } from '@/store/authStore';
 import styles from './Navbar.module.css';
 
 interface NavbarProps {
@@ -9,6 +11,13 @@ interface NavbarProps {
 
 export default function Navbar({ onCartOpen }: NavbarProps) {
   const totalItems = useCartStore((s) => s.totalItems());
+  const { email, login, logout, isAdmin } = useAuthStore((s) => ({
+    email: s.email,
+    login: s.login,
+    logout: s.logout,
+    isAdmin: s.isAdmin,
+  }));
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -17,6 +26,17 @@ export default function Navbar({ onCartOpen }: NavbarProps) {
     window.addEventListener('scroll', handler);
     return () => window.removeEventListener('scroll', handler);
   }, []);
+
+  const handleAuth = () => {
+    if (email) {
+      logout();
+      return;
+    }
+    const val = window.prompt('Entrez votre e‑mail pour vous connecter');
+    if (val && val.includes('@')) login(val.trim());
+  };
+
+  const initials = email ? email.split('@')[0].slice(0, 2).toUpperCase() : '';
 
   return (
     <>
@@ -47,10 +67,30 @@ export default function Navbar({ onCartOpen }: NavbarProps) {
             <button className={styles.iconBtn} aria-label="Rechercher">
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
+
+            {/* Login / User */}
+            <button className={styles.iconBtn} onClick={handleAuth} aria-label="Compte">
+              {email ? (
+                <span className={styles.userAvatar}>{initials}</span>
+              ) : (
+                <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M2 22a10 10 0 0120 0"/></svg>
+              )}
+            </button>
+
+            {/* Admin dashboard link */}
+            {isAdmin() && (
+              <Link href="/admin" aria-label="Admin" className={styles.iconBtnLink}>
+                <button className={styles.iconBtn} aria-label="Admin Dashboard">
+                  <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM13 3v6h8V3h-8zM3 21h8v-6H3v6z"/></svg>
+                </button>
+              </Link>
+            )}
+
             <button className={styles.iconBtn} onClick={onCartOpen} aria-label="Panier">
               <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
               {totalItems > 0 && <span className={styles.badge}>{totalItems}</span>}
             </button>
+
             <button
               className={`${styles.hamburger} ${menuOpen ? styles.open : ''}`}
               onClick={() => setMenuOpen((v) => !v)}

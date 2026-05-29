@@ -76,6 +76,8 @@
   gap: 4px;
 }
 
+.iconBtnLink { display: inline-flex; }
+
 .iconBtn {
   width: 40px;
   height: 40px;
@@ -96,6 +98,18 @@
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.userAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,var(--gold),var(--gold-lt));
+  color: var(--dark);
+  font-weight: 700;
 }
 
 .badge {

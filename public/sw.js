@@ -2,7 +2,9 @@ const CACHE_NAME = 'summer-store-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/favicon.ico',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon-192.svg',
+  '/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {

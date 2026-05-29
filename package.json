@@ -7,7 +7,8 @@
     "build": "node init-pwa.js && next build",
     "start": "next start",
     "lint": "next lint",
-    "setup-pwa": "node init-pwa.js"
+    "setup-pwa": "node init-pwa.js",
+    "icons:png": "node scripts/svg-to-png.js"
   },
   "dependencies": {
     "next": "14.2.3",
@@ -23,6 +24,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "14.2.3",
+    "sharp": "^0.32.4"
   }
 }
