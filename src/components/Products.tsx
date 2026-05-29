@@ -46,10 +46,35 @@ export default function Products({ activeFilter, onToast, onFilterChange }: Prod
   useEffect(() => {
     try {
       const saved = typeof window !== 'undefined' ? localStorage.getItem('summer_store_products') : null;
-      if (saved) setAllProducts(JSON.parse(saved));
-      else setAllProducts(PRODUCTS);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Merge saved with defaults: saved items first, then defaults that don't collide by id
+        const ids = new Set(parsed.map((p: any) => p.id));
+        const merged = [...parsed, ...PRODUCTS.filter((p) => !ids.has(p.id))];
+        setAllProducts(merged);
+      } else setAllProducts(PRODUCTS);
     } catch (e) {
       setAllProducts(PRODUCTS);
+    }
+  }, []);
+
+  // Listen for admin updates via BroadcastChannel and update products live
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined' || !('BroadcastChannel' in window)) return;
+      const bc = new BroadcastChannel('summer_store_products_channel');
+      const onMsg = (ev: MessageEvent) => {
+        if (ev?.data?.type === 'update' && Array.isArray(ev.data.products)) {
+          const parsed = ev.data.products;
+          const ids = new Set(parsed.map((p: any) => p.id));
+          const merged = [...parsed, ...PRODUCTS.filter((p) => !ids.has(p.id))];
+          setAllProducts(merged);
+        }
+      };
+      bc.addEventListener('message', onMsg as any);
+      return () => bc.close();
+    } catch (e) {
+      // ignore
     }
   }, []);
 

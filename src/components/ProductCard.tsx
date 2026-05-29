@@ -40,6 +40,7 @@ export default function ProductCard({ product, delay, onToast }: ProductCardProp
         </button>
       </div>
       <div className={styles.body}>
+        <div className={styles.meta}>#{product.id}</div>
         <div className={styles.cat}>{product.cat}</div>
         <div className={styles.name}>{product.name}</div>
         <div className={styles.footer}>

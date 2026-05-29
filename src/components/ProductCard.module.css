@@ -90,6 +90,11 @@
   display: grid;
   gap: 14px;
 }
+.meta {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
 .cat {
   font-size: 0.72rem;
   text-transform: uppercase;

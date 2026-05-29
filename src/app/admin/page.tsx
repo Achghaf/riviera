@@ -59,6 +59,15 @@ export default function AdminPage() {
   const handleSave = () => {
     try {
       localStorage.setItem('summer_store_products', JSON.stringify(products));
+      try {
+        if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+          const bc = new BroadcastChannel('summer_store_products_channel');
+          bc.postMessage({ type: 'update', products });
+          bc.close();
+        }
+      } catch (e) {
+        // ignore
+      }
       console.log('Admin saved products:', products);
       alert('Modifications sauvegardées dans le navigateur.');
     } catch (e) {
@@ -131,6 +140,9 @@ export default function AdminPage() {
           <p>Gérez vos produits, surveillez les performances et publiez votre catalogue depuis un seul endroit.</p>
         </div>
         <div className={styles.actions}>
+          <Link href="/">
+            <button className={styles.ghostBtn} type="button">Retour à l'accueil</button>
+          </Link>
           <button className={styles.primaryBtn} onClick={handleAdd}>Ajouter un produit</button>
           <button className={styles.secondaryBtn} onClick={resetProducts}>Réinitialiser</button>
           <button className={styles.ghostBtn} onClick={handleExport}>Exporter JSON</button>
