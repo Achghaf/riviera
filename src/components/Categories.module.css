@@ -1,0 +1,104 @@
+.section {
+  padding: 80px 0;
+  background: var(--white);
+}
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (min-width: 768px) { .container { padding: 0 40px; } }
+@media (min-width: 1024px) { .container { padding: 0 60px; } }
+
+.header {
+  text-align: center;
+  margin-bottom: 52px;
+}
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.15;
+}
+.title em { font-style: italic; color: var(--teal); }
+.sub {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .grid { grid-template-columns: repeat(5, 1fr); gap: 20px; } }
+
+.card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: var(--cream-dk);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out), box-shadow 250ms;
+}
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+@media (min-width: 900px) { .card:first-child { aspect-ratio: 3/5; } }
+.card:hover :global(img) { transform: scale(1.05); }
+
+.card :global(img) {
+  transition: transform 500ms var(--ease-out) !important;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(14,76,106,.7) 100%);
+  z-index: 1;
+}
+.label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 16px;
+  color: var(--white);
+  z-index: 2;
+}
+.label strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.label span { font-size: 0.75rem; opacity: 0.75; }
+
+/* Stagger delays */
+.d1 { transition-delay: 0ms; }
+.d2 { transition-delay: 80ms; }
+.d3 { transition-delay: 160ms; }
+.d4 { transition-delay: 240ms; }
+.d5 { transition-delay: 320ms; }
