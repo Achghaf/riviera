@@ -84,11 +84,7 @@ export default function AdminPage() {
     const nextId = Math.max(0, ...products.map((p) => p.id)) + 1;
     setProducts((prev) => [{ id: nextId, name: 'Nouveau produit', price: 0, cat: 'Accessoires', badge: null, img: '' }, ...prev]);
   };
- 
-  const [modal, setModal] = useState<{ isOpen: boolean; title: string; message: string; onConfirm: () => void; isDangerous?: boolean }>({ isOpen: false, title: '', message: '', onConfirm: () => {}, isDangerous: false });
-  const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [showMergePreview, setShowMergePreview] = useState(false);
+
 
   const handleDeleteConfirmed = (id: number, name: string) => {
     setModal({

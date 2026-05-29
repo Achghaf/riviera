@@ -4,13 +4,13 @@ import PWAInstallButton from '@/components/PWAInstallButton';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Summer Store — Boutique Estivale',
-  description: 'Votre destination pour tous vos besoins estivaux. Collection exclusive de produits premium pour un été inoubliable.',
+  title: 'RIVIERA — Boutique Estivale',
+  description: 'RIVIERA — votre destination pour un été inoubliable. Collection exclusive de produits premium inspirés du littoral.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Summer Store',
+    title: 'RIVIERA',
   },
   formatDetection: {
     telephone: false,
@@ -62,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Summer Store" />
+        <meta name="apple-mobile-web-app-title" content="RIVIERA" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="app-root">

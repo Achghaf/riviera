@@ -7,13 +7,21 @@ export default function Footer() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <div className={styles.logo}>
-              <div className={styles.logoMark}>
-                <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              <div className={styles.logoMark} aria-hidden>
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="10" r="3.5" fill="#FFD166" />
+                  <g stroke="#FFD166" strokeWidth="1.2" strokeLinecap="round">
+                    <line x1="12" y1="1.5" x2="12" y2="4.5" />
+                    <line x1="12" y1="15.5" x2="12" y2="18.5" />
+                    <line x1="3.6" y1="5.6" x2="5.8" y2="7.8" />
+                    <line x1="18.2" y1="13.2" x2="20.4" y2="15.4" />
+                    <line x1="3.6" y1="14.4" x2="5.8" y2="12.2" />
+                    <line x1="18.2" y1="8.8" x2="20.4" y2="6.6" />
+                  </g>
                 </svg>
               </div>
               <div>
-                <div className={styles.logoText}>Summer Store</div>
+                <div className={styles.logoText}>RIVIERA</div>
                 <div className={styles.logoSub}>Boutique Estivale</div>
               </div>
             </div>
