@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node init-pwa.js && next dev",
+    "build": "node init-pwa.js && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup-pwa": "node init-pwa.js"
   },
   "dependencies": {
     "next": "14.2.3",

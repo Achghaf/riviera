@@ -1,8 +1,9 @@
 .card {
   background: var(--white);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: none;
+  box-shadow: var(--shadow-sm);
   transition: transform 250ms var(--ease-out), box-shadow 250ms var(--ease-out), opacity 600ms var(--ease-out);
   opacity: 0;
   transform: translateY(28px);
@@ -13,8 +14,8 @@
   transform: translateY(0);
 }
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: var(--shadow-lg);
 }
 
 .imgWrap {

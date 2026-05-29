@@ -76,3 +76,14 @@ input { font-family: var(--font-body); }
   from { opacity: 1; transform: translateX(0); }
   to   { opacity: 0; transform: translateX(100%); }
 }
+
+/* UI helpers and accessibility */
+.app-root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.page { max-width: 1280px; margin: 0 auto; }
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+button:focus-visible, a:focus-visible {
+  outline: 3px solid rgba(26,107,138,0.12);
+  outline-offset: 3px;
+  border-radius: var(--r);
+}
