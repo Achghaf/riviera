@@ -44,18 +44,29 @@ export default function Products({ activeFilter, onToast, onFilterChange }: Prod
   }, [activeFilter]);
 
   useEffect(() => {
-    try {
-      const saved = typeof window !== 'undefined' ? localStorage.getItem('summer_store_products') : null;
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Merge saved with defaults: saved items first, then defaults that don't collide by id
-        const ids = new Set(parsed.map((p: any) => p.id));
-        const merged = [...parsed, ...PRODUCTS.filter((p) => !ids.has(p.id))];
+    (async () => {
+      try {
+        // Prefer server-provided catalog when available
+        let serverProducts: any = null;
+        try {
+          // attempt fetch from API (works in dev and environments that allow filesystem writes)
+          const res = await fetch('/api/products');
+          if (res.ok) serverProducts = await res.json();
+        } catch (e) {
+          serverProducts = null;
+        }
+
+        const saved = typeof window !== 'undefined' ? localStorage.getItem('summer_store_products') : null;
+        const savedParsed = saved ? JSON.parse(saved) : null;
+
+        const source = serverProducts && Array.isArray(serverProducts) && serverProducts.length > 0 ? serverProducts : (savedParsed || PRODUCTS);
+        const ids = new Set(source.map((p: any) => p.id));
+        const merged = [...source, ...PRODUCTS.filter((p) => !ids.has(p.id))];
         setAllProducts(merged);
-      } else setAllProducts(PRODUCTS);
-    } catch (e) {
-      setAllProducts(PRODUCTS);
-    }
+      } catch (e) {
+        setAllProducts(PRODUCTS);
+      }
+    })();
   }, []);
 
   // Listen for admin updates via BroadcastChannel and update products live

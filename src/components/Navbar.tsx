@@ -20,11 +20,16 @@ export default function Navbar({ onCartOpen }: NavbarProps) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handler);
     return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  useEffect(() => {
+    setHydrated(true);
   }, []);
 
   const handleAuth = () => {
@@ -70,16 +75,16 @@ export default function Navbar({ onCartOpen }: NavbarProps) {
 
             {/* Login / User */}
             <button className={styles.profileBtn} onClick={handleAuth} aria-label={email ? 'Mon compte' : 'Connexion'}>
-              {email ? (
-                <span className={styles.userAvatar}>{initials}</span>
-              ) : (
-                <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M2 22a10 10 0 0120 0"/></svg>
-              )}
-              <span className={styles.profileLabel}>{email ? 'Mon compte' : 'Se connecter'}</span>
+                {hydrated && email ? (
+                  <span className={styles.userAvatar}>{initials}</span>
+                ) : (
+                  <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M2 22a10 10 0 0120 0"/></svg>
+                )}
+                <span className={styles.profileLabel}>{hydrated && email ? 'Mon compte' : 'Se connecter'}</span>
             </button>
 
             {/* Admin dashboard link */}
-            {isAdmin() && (
+            {hydrated && isAdmin() && (
               <Link href="/admin" aria-label="Admin" className={styles.iconBtnLink}>
                 <button className={styles.iconBtn} aria-label="Admin Dashboard">
                   <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM13 3v6h8V3h-8zM3 21h8v-6H3v6z"/></svg>

@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { useState } from 'react';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/lib/data';
 import styles from './ProductCard.module.css';
@@ -13,6 +14,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, delay, onToast }: ProductCardProps) {
   const { addToCart, toggleWish, wishlist } = useCartStore();
   const isWished = wishlist.includes(product.id);
+  const [imgSrc, setImgSrc] = useState(product.img || '/placeholder.svg');
 
   const handleAdd = () => {
     addToCart(product);
@@ -27,7 +29,14 @@ export default function ProductCard({ product, delay, onToast }: ProductCardProp
   return (
     <div className={styles.card} style={{ '--delay': `${delay}ms` } as React.CSSProperties}>
       <div className={styles.imgWrap}>
-        <Image src={product.img} alt={product.name} fill style={{ objectFit: 'cover' }} sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 25vw" />
+        <Image
+          src={imgSrc}
+          alt={product.name}
+          fill
+          onError={() => setImgSrc('/placeholder.svg')}
+          style={{ objectFit: 'cover' }}
+          sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 25vw"
+        />
         {product.badge && <div className={styles.badge}>{product.badge}</div>}
         <button
           className={`${styles.wishBtn} ${isWished ? styles.wished : ''}`}

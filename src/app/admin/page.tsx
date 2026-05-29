@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PRODUCTS as INIT_PRODUCTS, Product, Category } from '@/lib/data';
 import { useAuthStore } from '@/store/authStore';
+import Modal from '@/components/Modal';
 import styles from './page.module.css';
 
 const CATEGORY_FILTERS: Array<Category | 'Tous'> = ['Tous', 'Accessoires', 'Vêtements', 'Soins', 'Chaussures', 'Maison'];
@@ -17,11 +18,39 @@ const SORT_OPTIONS = [
 
 export default function AdminPage() {
   const email = useAuthStore((s) => s.email);
-  const isAdmin = !!email && ['bnsachraf1@gmail.com'].includes(email.toLowerCase());
+  // Determine admin client-side to avoid hydration mismatch
+  const [ready, setReady] = useState(false);
+  const [isAdminLocal, setIsAdminLocal] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('summer_store_auth') : null;
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const e = parsed?.state?.email || email;
+          setIsAdminLocal(!!e && ['bnsachraf1@gmail.com'].includes(String(e).toLowerCase()));
+        } catch (e) {
+          setIsAdminLocal(!!email && ['bnsachraf1@gmail.com'].includes(String(email).toLowerCase()));
+        }
+      } else {
+        setIsAdminLocal(!!email && ['bnsachraf1@gmail.com'].includes(String(email).toLowerCase()));
+      }
+    } catch (e) {
+      setIsAdminLocal(!!email && ['bnsachraf1@gmail.com'].includes(String(email).toLowerCase()));
+    }
+    setReady(true);
+  }, [email]);
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'Tous'>('Tous');
   const [sortOption, setSortOption] = useState('recent');
+  const [showMergePreview, setShowMergePreview] = useState(false);
+  
+  // Modal states
+  const [modal, setModal] = useState<{ isOpen: boolean; title: string; message: string; onConfirm: () => void; isDangerous?: boolean }>({ isOpen: false, title: '', message: '', onConfirm: () => {}, isDangerous: false });
+  const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   useEffect(() => {
     try {
@@ -55,9 +84,51 @@ export default function AdminPage() {
     const nextId = Math.max(0, ...products.map((p) => p.id)) + 1;
     setProducts((prev) => [{ id: nextId, name: 'Nouveau produit', price: 0, cat: 'Accessoires', badge: null, img: '' }, ...prev]);
   };
+ 
+  const [modal, setModal] = useState<{ isOpen: boolean; title: string; message: string; onConfirm: () => void; isDangerous?: boolean }>({ isOpen: false, title: '', message: '', onConfirm: () => {}, isDangerous: false });
+  const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [showMergePreview, setShowMergePreview] = useState(false);
 
-  const handleSave = () => {
+  const handleDeleteConfirmed = (id: number, name: string) => {
+    setModal({
+      isOpen: true,
+      title: 'Supprimer le produit',
+      message: `Êtes-vous sûr de vouloir supprimer "${name}" ? Cette action est irréversible.`,
+      isDangerous: true,
+      onConfirm: () => {
+        handleDelete(id);
+        setModal({ ...modal, isOpen: false });
+      },
+    });
+  };
+
+  const resetProductsConfirmed = () => {
+    setModal({
+      isOpen: true,
+      title: 'Réinitialiser le catalogue',
+      message: 'Êtes-vous sûr de vouloir réinitialiser tous les produits aux valeurs par défaut ? Les modifications non sauvegardées seront perdues.',
+      isDangerous: true,
+      onConfirm: () => {
+        resetProducts();
+        setModal({ ...modal, isOpen: false });
+      },
+    });
+  };
+
+  const handleSave = async () => {
+    setSaveStatus('saving');
     try {
+      // Try server save first
+      let serverOk = false;
+      try {
+        const res = await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(products) });
+        serverOk = res.ok;
+      } catch (e) {
+        serverOk = false;
+      }
+
+      // Persist locally as well
       localStorage.setItem('summer_store_products', JSON.stringify(products));
       try {
         if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
@@ -68,19 +139,41 @@ export default function AdminPage() {
       } catch (e) {
         // ignore
       }
-      console.log('Admin saved products:', products);
-      alert('Modifications sauvegardées dans le navigateur.');
+
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      console.log('Admin saved products:', products, 'serverOk:', serverOk);
     } catch (e) {
       console.error('Failed to save products', e);
-      alert('Échec de la sauvegarde. Ouvrez la console pour plus de détails.');
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
 
   const handleExport = async () => {
     const payload = JSON.stringify(products, null, 2);
     await navigator.clipboard.writeText(payload);
-    alert('JSON des produits copié dans le presse-papiers.');
+    setModal({
+      isOpen: true,
+      title: 'Exportation réussie',
+      message: 'JSON des produits copié dans le presse-papiers.',
+      onConfirm: () => setModal({ ...modal, isOpen: false }),
+    });
   };
+
+  // Preview merged catalog for admin
+  const mergedPreview = useMemo(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('summer_store_products') || 'null') : null;
+      if (Array.isArray(saved)) {
+        const ids = new Set(saved.map((p: any) => p.id));
+        return [...saved, ...INIT_PRODUCTS.filter((p) => !ids.has(p.id))].slice(0, 6);
+      }
+    } catch (e) {
+      // ignore
+    }
+    return INIT_PRODUCTS.slice(0, 6);
+  }, []);
 
   const metrics = useMemo(() => {
     const total = products.length;
@@ -120,7 +213,15 @@ export default function AdminPage() {
     return filtered;
   }, [products, categoryFilter, search, sortOption]);
 
-  if (!isAdmin) {
+  if (!ready) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.emptyState}>Chargement…</div>
+      </main>
+    );
+  }
+
+  if (!isAdminLocal) {
     return (
       <main className={styles.page}>
         <div className={styles.emptyState}>
@@ -134,6 +235,15 @@ export default function AdminPage() {
 
   return (
     <main className={styles.page}>
+      <Modal
+        isOpen={modal.isOpen}
+        title={modal.title}
+        message={modal.message}
+        isDangerous={modal.isDangerous}
+        onConfirm={modal.onConfirm}
+        onCancel={() => setModal({ ...modal, isOpen: false })}
+      />
+
       <section className={styles.header}>
         <div className={styles.titleGroup}>
           <h1>Tableau de bord Admin</h1>
@@ -141,10 +251,13 @@ export default function AdminPage() {
         </div>
         <div className={styles.actions}>
           <Link href="/">
-            <button className={styles.ghostBtn} type="button">Retour à l'accueil</button>
+            <button className={styles.ghostBtn} type="button">Retour à l&apos;accueil</button>
           </Link>
           <button className={styles.primaryBtn} onClick={handleAdd}>Ajouter un produit</button>
-          <button className={styles.secondaryBtn} onClick={resetProducts}>Réinitialiser</button>
+          <button className={styles.secondaryBtn} onClick={resetProductsConfirmed}>Réinitialiser</button>
+          <button className={styles.ghostBtn} onClick={() => setShowMergePreview(!showMergePreview)}>
+            {showMergePreview ? 'Masquer' : 'Aperçu'} catalogue fusionné
+          </button>
           <button className={styles.ghostBtn} onClick={handleExport}>Exporter JSON</button>
         </div>
       </section>
@@ -167,6 +280,35 @@ export default function AdminPage() {
           <span>Bestsellers / Nouveautés</span>
         </div>
       </div>
+
+      {showMergePreview && (
+        <section className={styles.mergePreview}>
+          <div className={styles.mergeHeader}>
+            <h3>Aperçu du catalogue fusionné</h3>
+            <p>Vos produits personnalisés + produits par défaut (6 premiers)</p>
+          </div>
+          <div className={styles.productGrid}>
+            {mergedPreview.map((product) => (
+              <div key={product.id} className={styles.previewCard}>
+                <div className={styles.previewImg}>
+                  <Image
+                    src={brokenImages.has(product.id) ? '/placeholder.svg' : (product.img || '/placeholder.svg')}
+                    alt={product.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="150px"
+                    onError={() => setBrokenImages((prev) => new Set(prev).add(product.id))}
+                  />
+                </div>
+                <div className={styles.previewInfo}>
+                  <div className={styles.previewName}>{product.name}</div>
+                  <div className={styles.previewPrice}>{product.price.toFixed(2)}€</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className={styles.panel}>
         <div className={styles.searchCard}>
@@ -221,7 +363,14 @@ export default function AdminPage() {
           filteredProducts.map((product) => (
             <article key={product.id} className={styles.productCard}>
               <div className={styles.productMedia}>
-                <Image src={product.img || 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&q=80&auto=format'} alt={product.name} fill style={{ objectFit: 'cover' }} sizes="150px" />
+                <Image
+                  src={brokenImages.has(product.id) ? '/placeholder.svg' : (product.img || '/placeholder.svg')}
+                  alt={product.name}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  sizes="150px"
+                  onError={() => setBrokenImages((prev) => new Set(prev).add(product.id))}
+                />
               </div>
               <div className={styles.productContent}>
                 <div className={styles.productHeading}>
@@ -274,7 +423,7 @@ export default function AdminPage() {
                   <span className={styles.priceTag}>{product.price.toFixed(2)}€</span>
                   <div className={styles.cardActions}>
                     <button type="button" className={styles.duplicateBtn} onClick={() => handleDuplicate(product.id)}>Dupliquer</button>
-                    <button type="button" className={styles.deleteBtn} onClick={() => handleDelete(product.id)}>Supprimer</button>
+                    <button type="button" className={styles.deleteBtn} onClick={() => handleDeleteConfirmed(product.id, product.name)}>Supprimer</button>
                   </div>
                 </div>
               </div>
@@ -283,8 +432,17 @@ export default function AdminPage() {
         )}
       </section>
 
-      <div style={{ marginTop: 28 }}>
-        <button className={styles.secondaryBtn} onClick={handleSave}>Enregistrer les modifications</button>
+      <div className={styles.footer}>
+        <button
+          className={`${styles.primaryBtn} ${saveStatus === 'saving' ? styles.loading : ''} ${saveStatus === 'saved' ? styles.success : ''} ${saveStatus === 'error' ? styles.error : ''}`}
+          onClick={handleSave}
+          disabled={saveStatus === 'saving'}
+        >
+          {saveStatus === 'saving' && '⏳ Enregistrement...'}
+          {saveStatus === 'saved' && '✓ Sauvegardé'}
+          {saveStatus === 'error' && '✗ Erreur'}
+          {saveStatus === 'idle' && 'Enregistrer les modifications'}
+        </button>
       </div>
     </main>
   );

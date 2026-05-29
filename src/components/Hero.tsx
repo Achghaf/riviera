@@ -1,7 +1,11 @@
+'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 
 export default function Hero() {
+  const [heroImg, setHeroImg] = useState('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&auto=format');
+
   return (
     <section className={styles.hero}>
       <div className={styles.content}>
@@ -38,10 +42,11 @@ export default function Hero() {
 
       <div className={styles.imageWrap}>
         <Image
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&auto=format"
+          src={heroImg}
           alt="Plage ensoleillée"
           fill
           priority
+          onError={() => setHeroImg('/placeholder.svg')}
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
         <div className={styles.imageOverlay} />

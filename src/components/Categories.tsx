@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import { CATEGORIES } from '@/lib/data';
 import { useReveal } from '@/lib/useReveal';
@@ -10,6 +11,12 @@ interface CategoriesProps {
 
 export default function Categories({ onFilter }: CategoriesProps) {
   const ref = useReveal<HTMLDivElement>();
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
+
+  const handleImageError = (catName: string) => {
+    setBrokenImages((prev) => new Set(prev).add(catName));
+  };
+
   return (
     <section className={styles.section} id="categories">
       <div className={styles.container}>
@@ -25,7 +32,13 @@ export default function Categories({ onFilter }: CategoriesProps) {
               className={`${styles.card} ${styles[`d${i + 1}`]}`}
               onClick={() => { onFilter(cat.name); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}
             >
-              <Image src={cat.img} alt={cat.name} fill style={{ objectFit: 'cover' }} />
+              <Image
+                src={brokenImages.has(cat.name) ? '/placeholder.svg' : cat.img}
+                alt={cat.name}
+                fill
+                style={{ objectFit: 'cover' }}
+                onError={() => handleImageError(cat.name)}
+              />
               <div className={styles.overlay} />
               <div className={styles.label}>
                 <strong>{cat.name}</strong>
