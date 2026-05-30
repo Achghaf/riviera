@@ -1,9 +1,9 @@
 {
-  "name": "Summer Store — Boutique Estivale",
-  "short_name": "Summer Store",
+  "name": "RIVIERA — Boutique Estivale",
+  "short_name": "RIVIERA",
   "version": "0.1.0",
   "version_name": "0.1.0",
-  "description": "Votre destination pour tous vos besoins estivaux. Collection exclusive de produits premium pour un été inoubliable.",
+  "description": "RIVIERA — votre destination pour un été inoubliable. Collection exclusive inspirée du littoral.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

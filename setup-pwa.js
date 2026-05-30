@@ -12,11 +12,11 @@ if (!fs.existsSync(publicDir)) {
 
 // Create manifest.json
 const manifest = {
-  "name": "Summer Store — Boutique Estivale",
-  "short_name": "Summer Store",
+  "name": "RIVIERA — Boutique Estivale",
+  "short_name": "RIVIERA",
   "version": appVersion,
   "version_name": appVersion,
-  "description": "Votre destination pour tous vos besoins estivaux. Collection exclusive de produits premium pour un été inoubliable.",
+  "description": "RIVIERA — votre destination pour un été inoubliable. Collection exclusive inspirée du littoral.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -147,7 +147,7 @@ const offlineHtml = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Offline - Summer Store</title>
+  <title>Offline - RIVIERA</title>
   <style>
     * {
       margin: 0;

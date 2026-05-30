@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
         </div>
         <div className={styles.bottom}>
-          <p>© 2025 Summer Store. Tous droits réservés.</p>
+          <p>© 2025 RIVIERA. Tous droits réservés.</p>
           <p>Made with ☀️ pour un été parfait</p>
         </div>
       </div>
